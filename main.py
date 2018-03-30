@@ -5,9 +5,9 @@ app = Flask(__name__)
 
 app.config['DEBUG'] = True
 
-@app.route("/add", methods=['POST'])
+@app.route("/", methods=['POST'])
 def validation():
-    user_username = request.form['username']
+    user_username = cgi.escape(request.form['username'], quote=True)
     user_password = request.form['password']
     user_password_verify = request.form['verify']
     user_email = request.form['email']
@@ -26,22 +26,21 @@ def validation():
         return verify_error
 
     # if the username or password is entered by not valid
-    if :
-        
-        return 
+    if (len(user_username) > 20) or (len(user_username) < 3):
+        username_error = True
+        return username_error
+    
+    if (len(user_password) > 20) or (len(user_password) < 3):
+        password_error = True
+        return password_error
 
     # if the passwords don't match
-    if :
-       
-        return 
+    if user_password != user_password_verify:
+       verify_error = True
+        return verify_error
 
-    # 'escape' the user's input so that if they typed HTML, it doesn't mess up our site
-    new_movie_escaped = cgi.escape(new_movie, quote=True)
-
-    # TODO:
-    # Create a template called add-confirmation.html inside your /templates directory
-    # Use that template to render the confirmation message instead of this temporary message below
-    return render_template('add-confirmation.html', added_mov
+    if (not username_error) or (not password_error) or (not verify_error) or (not email_error):
+        return render_template('welcome.html', user_username)
 
 @app.route("/")
 def index():
