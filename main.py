@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 app.config['DEBUG'] = True
 
-@app.route("/", methods=['POST'])
+@app.route("/signup", methods=['POST'])
 def validation():
     user_username = cgi.escape(request.form['username'], quote=True)
     user_password = request.form['password']
@@ -30,7 +30,7 @@ def validation():
         username_error = True
         return username_error
     
-    if (len(user_password) > 20) or (len(user_password) < 3):
+    if (len(user_password) > 20) or (len(user_password) < 3) ###or (REGULAR EXPRESSION)###:
         password_error = True
         return password_error
 
