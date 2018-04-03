@@ -1,5 +1,11 @@
 from flask import Flask, request, redirect, render_template
+import re
 import cgi
+import os
+import jinja2
+
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape=True)
 
 app = Flask(__name__)
 
@@ -11,41 +17,38 @@ def validation():
     user_password = request.form['password']
     user_password_verify = request.form['verify']
     user_email = request.form['email']
+    password_error = False
+    username_error = False
+    verify_error = False
+    email_error = False
 
-    # if the user typed nothing at all, tell them the error
     if (not user_password) or (user_password.strip() == ""):
         password_error = True
-        return password_error
 
     if (not user_username) or (user_username.strip() == ""):
         username_error = True
-        return username_error
 
     if (not user_password_verify) or (user_password_verify.strip() == ""):
         verify_error = True
-        return verify_error
 
-    # if the username or password is entered by not valid
     if (len(user_username) > 20) or (len(user_username) < 3):
         username_error = True
-        return username_error
     
-    if (len(user_password) > 20) or (len(user_password) < 3) ###or (REGULAR EXPRESSION)###:
+    if (len(user_password) > 20) or (len(user_password) < 3):
         password_error = True
-        return password_error
 
-    # if the passwords don't match
     if user_password != user_password_verify:
        verify_error = True
-        return verify_error
 
-    if (not username_error) or (not password_error) or (not verify_error) or (not email_error):
-        return render_template('welcome.html', user_username)
+    if (not username_error) and (not password_error) and (not verify_error) and (not email_error):
+        return render_template('welcome.html', username=user_username)
+    else:
+        return render_template('signup.html', username_error=username_error, password_error=password_error, verify_error=verify_error, email_error=email_error)
 
 @app.route("/")
 def index():
     encoded_error = request.args.get("error")
-    return render_template('edit.html', watchlist=get_current_watchlist(), error=encoded_error and cgi.escape(encoded_error, quote=True))
+    return render_template('signup.html')
 
 
 app.run()
