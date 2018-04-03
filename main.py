@@ -39,6 +39,9 @@ def validation():
 
     if user_password != user_password_verify:
        verify_error = True
+    
+    if ("@" not in user_email) or ("." not in user_email) or (len(user_email) > 20) or (len(user_email) < 3):
+        email_error = True
 
     if (not username_error) and (not password_error) and (not verify_error) and (not email_error):
         return render_template('welcome.html', username=user_username)
@@ -47,7 +50,6 @@ def validation():
 
 @app.route("/")
 def index():
-    encoded_error = request.args.get("error")
     return render_template('signup.html')
 
 
