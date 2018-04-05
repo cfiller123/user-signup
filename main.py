@@ -46,7 +46,7 @@ def validation():
     if (not username_error) and (not password_error) and (not verify_error) and (not email_error):
         return render_template('welcome.html', username=user_username)
     else:
-        return render_template('signup.html', username_error=username_error, password_error=password_error, verify_error=verify_error, email_error=email_error)
+        return render_template('signup.html',username=user_username, email=user_email, username_error=username_error, password_error=password_error, verify_error=verify_error, email_error=email_error)
 
 @app.route("/")
 def index():
